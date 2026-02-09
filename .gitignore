@@ -24,6 +24,10 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 venv/
+.venv/
 ENV/
+coverage.xml
+output/
+*.html
 docs/interview-prep.md
 social/
