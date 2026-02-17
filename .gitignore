@@ -23,11 +23,9 @@ wheels/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
-venv/
 .venv/
+venv/
 ENV/
-coverage.xml
-output/
-*.html
+env/
 docs/interview-prep.md
 social/
