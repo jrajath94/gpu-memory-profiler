@@ -116,14 +116,12 @@ def _run_demo(args: argparse.Namespace) -> None:
     report = profiler.report()
     viz = MemoryVisualizer(report)
 
-    # Print text summary
-    print(viz.generate_summary_text())
+    logger.info("Profiling complete. Summary:\n%s", viz.generate_summary_text())
 
-    # Save HTML if output specified
     if args.output:
         output_dir = Path(args.output)
         profiler.visualize(output_dir)
-        print(f"\nVisualizations saved to {output_dir}/")
+        logger.info("Visualizations saved to %s/", output_dir)
 
 
 def _run_estimate(args: argparse.Namespace) -> None:
@@ -138,11 +136,11 @@ def _run_estimate(args: argparse.Namespace) -> None:
         batch_size=args.batch_size,
     )
 
-    print(f"Memory Estimate: {args.params} parameters ({args.dtype})")
-    print("=" * 50)
+    lines = [f"Memory Estimate: {args.params} parameters ({args.dtype})", "=" * 50]
     for component, size in breakdown.items():
-        print(f"  {component:20s}: {format_bytes(size):>12s}")
-    print("=" * 50)
+        lines.append(f"  {component:20s}: {format_bytes(size):>12s}")
+    lines.append("=" * 50)
+    logger.info("\n".join(lines))
 
 
 def _parse_param_count(s: str) -> int:
