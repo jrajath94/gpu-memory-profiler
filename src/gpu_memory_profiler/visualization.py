@@ -9,8 +9,6 @@ from gpu_memory_profiler.models import (
     AllocationEvent,
     AllocationEventType,
     LeakCandidate,
-    MemorySnapshot,
-    MemoryTimeline,
     ProfileReport,
 )
 

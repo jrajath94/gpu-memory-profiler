@@ -73,7 +73,7 @@ def demo_training_simulation() -> None:
     profiler = MemoryProfiler(config)
 
     with profiler:
-        timeline = simulate_training_loop(
+        simulate_training_loop(
             tracker=profiler.tracker,
             num_iterations=15,
             batch_size=32,

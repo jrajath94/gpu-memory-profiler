@@ -3,14 +3,10 @@
 import logging
 import random
 import time
-from typing import List, Optional, Tuple
+from typing import List
 
 from gpu_memory_profiler.models import (
-    AllocationEvent,
-    AllocationEventType,
-    MemorySnapshot,
     MemoryTimeline,
-    ProfileConfig,
 )
 from gpu_memory_profiler.tracker import AllocationTracker
 

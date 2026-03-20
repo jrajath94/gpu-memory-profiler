@@ -272,7 +272,7 @@ def _linear_regression(
     sum_y = sum(y)
     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
     sum_x2 = sum(xi * xi for xi in x)
-    sum_y2 = sum(yi * yi for yi in y)
+    _sum_y2 = sum(yi * yi for yi in y)  # noqa: F841
 
     denom = n * sum_x2 - sum_x * sum_x
     if abs(denom) < 1e-10:

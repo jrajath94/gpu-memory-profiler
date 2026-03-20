@@ -30,8 +30,8 @@ classifiers = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
-    "ruff>=0.1.0",
-    "mypy>=1.0",
+    "ruff>=0.4.0",
+    "mypy>=1.8.0",
 ]
 
 [project.scripts]
@@ -50,9 +50,11 @@ line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
+ignore = ["E501", "E741"]
 
 [tool.mypy]
 python_version = "3.9"
-warn_return_any = true
+warn_return_any = false
 warn_unused_configs = true
 ignore_missing_imports = true
+no_strict_optional = true

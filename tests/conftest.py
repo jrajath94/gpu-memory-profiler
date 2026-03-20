@@ -1,14 +1,11 @@
 """Shared fixtures for GPU Memory Profiler tests."""
 
-import time
 
 import pytest
 
 from gpu_memory_profiler.models import (
     AllocationEvent,
     AllocationEventType,
-    LeakCandidate,
-    LeakSeverity,
     MemorySnapshot,
     MemoryTimeline,
     ProfileConfig,

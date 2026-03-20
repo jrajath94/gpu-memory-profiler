@@ -12,7 +12,6 @@ from gpu_memory_profiler.models import (
     LeakSeverity,
     MemorySnapshot,
     MemoryTimeline,
-    ProfileConfig,
     ProfileReport,
 )
 from gpu_memory_profiler.visualization import (

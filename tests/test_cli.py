@@ -6,9 +6,9 @@ from unittest.mock import patch
 import pytest
 
 from gpu_memory_profiler.cli import _parse_param_count, main
-from gpu_memory_profiler.utils import simulate_inference_batch
-from gpu_memory_profiler.tracker import AllocationTracker
 from gpu_memory_profiler.models import ProfileConfig
+from gpu_memory_profiler.tracker import AllocationTracker
+from gpu_memory_profiler.utils import simulate_inference_batch
 
 
 class TestParseParamCount:

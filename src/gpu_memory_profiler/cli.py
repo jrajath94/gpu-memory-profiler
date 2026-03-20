@@ -7,7 +7,6 @@ from pathlib import Path
 
 from gpu_memory_profiler.core import MemoryProfiler
 from gpu_memory_profiler.models import ProfileConfig
-from gpu_memory_profiler.tracker import AllocationTracker
 from gpu_memory_profiler.utils import (
     estimate_model_memory,
     format_bytes,
@@ -106,7 +105,7 @@ def _run_demo(args: argparse.Namespace) -> None:
 
     with profiler:
         tracker = profiler.tracker
-        timeline = simulate_training_loop(
+        simulate_training_loop(
             tracker=tracker,
             num_iterations=args.iterations,
             leak_probability=0.3 if args.leak else 0.0,

@@ -11,7 +11,6 @@ from gpu_memory_profiler.exceptions import (
 )
 from gpu_memory_profiler.leak_detector import LeakDetector, _linear_regression
 from gpu_memory_profiler.models import (
-    AllocationEvent,
     AllocationEventType,
     LeakSeverity,
     MemorySnapshot,
