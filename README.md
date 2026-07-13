@@ -73,11 +73,11 @@ gpu-profiler demo --iterations 30 --leak --output output/
 ```
 Memory Estimate: 7B parameters (fp16)
 ==================================================
-  parameters          :      13.0 GB
-  gradients           :      13.0 GB
-  optimizer_states    :      26.1 GB
-  activations         :       5.7 GB
-  total               :      57.8 GB
+  parameters          :     13.04 GB
+  gradients           :     13.04 GB
+  optimizer_states    :     26.08 GB
+  activations         :      2.17 GB
+  total               :     54.33 GB
 ==================================================
 ```
 
@@ -87,12 +87,12 @@ Run `make bench` to generate performance benchmarks on your system. Example resu
 
 | Component           | Throughput     | Latency (avg) | Conditions                   |
 | ------------------- | -------------- | ------------- | ---------------------------- |
-| Allocation tracking | 426,692 ops/s  | 2.3 us        | No stack traces, ring buffer |
-| Alloc + stack trace | 14,221 ops/s   | 70.3 us       | 5-frame trace capture        |
-| Snapshot            | 642,861 ops/s  | 1.6 us        | 100 live allocations         |
-| Leak detection      | 5,352 ops/s    | 186.8 us      | 100 snapshots, 3 heuristics  |
-| Training simulation | 249 sims/s     | 4,023.1 us    | 50 iterations, 6 layers      |
-| Full pipeline       | 402 runs/s     | 2,490.2 us    | Track + detect + visualize   |
+| Allocation tracking | 386,543 ops/s  | 2.6 us        | No stack traces, ring buffer |
+| Alloc + stack trace | 30,739 ops/s   | 32.5 us       | 5-frame trace capture        |
+| Snapshot            | 756,293 ops/s  | 1.3 us        | 100 live allocations         |
+| Leak detection      | 5,859 ops/s    | 170.7 us      | 100 snapshots, 3 heuristics  |
+| Training simulation | 252 sims/s     | 3,961.9 us    | 50 iterations, 6 layers      |
+| Full pipeline       | 382 runs/s     | 2,620.6 us    | Track + detect + visualize   |
 
 ## Key Design Decisions
 
