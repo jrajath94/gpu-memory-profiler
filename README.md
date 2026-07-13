@@ -11,7 +11,7 @@
 
 PyTorch's built-in memory profiler shows you total bytes allocated -- not where they came from or why they're not being freed. Every ML engineer has hit an OOM error with no actionable information. This profiler attaches to PyTorch's allocation hooks and builds flame graphs: you see exactly which operations hold memory, when allocations spike, and which tensors are never freed.
 
-The root cause is a visibility gap. PyTorch's caching allocator requests large chunks from CUDA (512MB at a time) and subdivides them internally. When you `del` a tensor, PyTorch marks the block as free but does not return it to CUDA -- so `nvidia-smi` shows high memory even after freeing tensors. Real leaks (retained computation graphs, global tensor references, DataLoader workers initializing CUDA contexts) hide behind this noise. At scale on a 100-GPU cluster, even 5% memory efficiency improvement saves 5 GPUs -- roughly $75,000 per year in cloud costs.
+The root cause is a visibility gap. PyTorch's caching allocator requests large chunks from CUDA (512MB at a time) and subdivides them internally. When you `del` a tensor, PyTorch marks the block as free but does not return it to CUDA -- so `nvidia-smi` shows high memory even after freeing tensors. Real leaks (retained computation graphs, global tensor references, DataLoader workers initializing CUDA contexts) hide behind this noise.
 
 ## Architecture
 
@@ -81,25 +81,25 @@ Memory Estimate: 7B parameters (fp16)
 ==================================================
 ```
 
-## Key Results
+## Performance
 
-| Component           | Throughput       | Latency (avg) | Conditions                   |
-| ------------------- | ---------------- | ------------- | ---------------------------- |
-| Allocation tracking | 142,139 ops/s    | 7.0 us        | No stack traces, ring buffer |
-| Alloc + stack trace | 18,142 ops/s     | 55.1 us       | 5-frame trace capture        |
-| Snapshot            | 415,742 ops/s    | 2.4 us        | 100 live allocations         |
-| Leak detection      | 3,458 analyses/s | 289.2 us      | 100 snapshots, 3 heuristics  |
-| Training simulation | 94 sims/s        | 10,638 us     | 50 iterations, 6 layers      |
-| Full pipeline       | 273 runs/s       | 3,665 us      | Track + detect + visualize   |
+Run `make bench` to generate performance benchmarks on your system. Example results:
 
-Profiler overhead: **2.1%** of total execution time.
+| Component           | Throughput     | Latency (avg) | Conditions                   |
+| ------------------- | -------------- | ------------- | ---------------------------- |
+| Allocation tracking | 426,692 ops/s  | 2.3 us        | No stack traces, ring buffer |
+| Alloc + stack trace | 14,221 ops/s   | 70.3 us       | 5-frame trace capture        |
+| Snapshot            | 642,861 ops/s  | 1.6 us        | 100 live allocations         |
+| Leak detection      | 5,352 ops/s    | 186.8 us      | 100 snapshots, 3 heuristics  |
+| Training simulation | 249 sims/s     | 4,023.1 us    | 50 iterations, 6 layers      |
+| Full pipeline       | 402 runs/s     | 2,490.2 us    | Track + detect + visualize   |
 
 ## Key Design Decisions
 
 | Decision                                    | Rationale                                                                             | Alternative Considered        | Tradeoff                                                                                           |
 | ------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------- |
 | Ring buffer (`deque(maxlen=N)`) for events  | Bounded memory -- profiler cannot cause its own OOM during long sessions              | Unbounded list                | Loses oldest events, but prevents the ironic failure of a profiler crashing from memory exhaustion |
-| Linear regression leak detection            | Interpretable (slope = bytes/sec), fast (3,458 analyses/s), works on time-series data | ML-based anomaly detection    | ML approach is overkill, opaque, and adds a torch dependency to a profiling tool                   |
+| Linear regression leak detection            | Interpretable (slope = bytes/sec), fast, works on time-series data                   | ML-based anomaly detection    | ML approach is overkill, opaque, and adds a torch dependency to a profiling tool                   |
 | Hysteresis via R^2 > 0.7 threshold          | Prevents false positives from normal oscillating alloc/free patterns during training  | Simple growth threshold       | Misses some edge cases, but dramatically reduces false positive noise                              |
 | Standalone HTML visualization               | Zero deps, shareable, offline-capable, no running server required                     | Plotly/matplotlib/TensorBoard | Self-contained HTML with inline SVG is less pretty but always works everywhere                     |
 | Thread-safe tracker with `threading.Lock`   | DataLoader workers run in threads -- profiling must not crash training                | No locking                    | Lock contention adds ~2us per event, but correctness matters more than microseconds                |
