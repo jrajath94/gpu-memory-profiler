@@ -98,7 +98,7 @@ class LeakDetector:
         times = [s.timestamp for s in snapshots]
         values = [s.allocated_bytes for s in snapshots]
 
-        slope, r_squared = _linear_regression(times, values)
+        slope, r_squared = _linear_regression(times, [float(v) for v in values])
 
         # Growth must exceed threshold and be a consistent trend
         if slope < self._config.leak_growth_threshold_bytes:
